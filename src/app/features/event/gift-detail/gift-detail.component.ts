@@ -82,11 +82,6 @@ import {
               <div class="space-y-4 text-center">
                 <div class="text-4xl">🎁</div>
                 <h3 class="text-xl font-bold text-gray-800">¿Quieres regalarlo?</h3>
-                <p class="text-gray-600">
-                  Puedes hacerte cargo del regalo completo y nosotros nos encargamos de conseguirlo con todo el
-                  cariño. Resérvalo aquí y cuéntanos cómo prefieres apoyarnos.
-                </p>
-
                 <div class="text-left bg-white/80 rounded-2xl p-4 shadow-inner space-y-2">
                   <p class="text-sm font-semibold text-gray-800">Opciones para apoyar:</p>
                   <ul class="text-sm text-gray-600 space-y-1">
@@ -102,7 +97,8 @@ import {
                   <p>Número: 2203444745</p>
                   <p>Titular: Marco Clavijo</p>
                   <p class="text-xs text-gray-500">
-                    Cuando realices el aporte, confírmalo en la app para marcar el regalito como reservado.
+                    Cuando realices el aporte, o si prefieres traerlo el día del baby shower, confírmalo en la app para
+                    marcar el regalito como reservado.
                   </p>
                 </div>
 
