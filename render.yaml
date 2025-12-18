@@ -1,11 +1,8 @@
 services:
   - type: static
     name: ia-msa-frn-agent
-    buildCommand: npm install && npm run render-build
+    buildCommand: npm install && npm run build
     publishPath: dist/baby-shower-frontend/browser
-    envVars:
-      - key: NG_APP_API_URL
-        sync: false
     routes:
       - type: rewrite
         source: /*

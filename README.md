@@ -163,9 +163,6 @@ npm run test:coverage
 # Build optimizado estándar
 npm run build
 
-# Build listo para Render (inyecta NG_APP_API_URL si está configurada)
-npm run render-build
-
 # Los archivos se generarán en dist/
 ```
 
