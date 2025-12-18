@@ -96,6 +96,13 @@ import { LoadingSpinnerComponent, ErrorMessageComponent, FooterActionsComponent 
                 <span class="text-sm font-semibold">¿Dudas?</span>
               </button>
             </div>
+            <button
+              (click)="navigate('baby-message')"
+              class="btn-outline w-full flex items-center justify-center gap-2 py-3"
+            >
+              <span class="text-xl">👶</span>
+              <span class="text-sm font-semibold">Dejar mensaje para el bebé</span>
+            </button>
           </div>
         </div>
       </div>
