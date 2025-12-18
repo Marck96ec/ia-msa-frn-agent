@@ -163,10 +163,23 @@ export class GiftsListComponent implements OnInit {
   }
 
   filterGifts(): void {
-    if (this.activeFilter === 'all') {
-      this.filteredGifts = this.gifts;
-    } else {
-      this.filteredGifts = this.gifts.filter(g => g.status === this.activeFilter);
+    switch (this.activeFilter) {
+      case 'all':
+        this.filteredGifts = this.gifts;
+        break;
+      case 'PARTIALLY_FUNDED':
+        this.filteredGifts = this.gifts.filter(
+          g => g.status === GiftStatus.PARTIALLY_FUNDED || g.allowSplit === true
+        );
+        break;
+      case 'FULLY_FUNDED':
+        this.filteredGifts = this.gifts.filter(
+          g => g.status === GiftStatus.FULLY_FUNDED || g.status === GiftStatus.RESERVED
+        );
+        break;
+      default:
+        this.filteredGifts = this.gifts.filter(g => g.status === this.activeFilter);
+        break;
     }
   }
 
