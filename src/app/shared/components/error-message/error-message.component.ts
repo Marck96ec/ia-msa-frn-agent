@@ -21,6 +21,7 @@ export interface ErrorInfo {
       <p class="text-gray-600 mb-6">{{ error.message }}</p>
       <button 
         *ngIf="error.showRetry !== false"
+        type="button"
         (click)="retry.emit()"
         class="btn-primary">
         Intentar nuevamente
