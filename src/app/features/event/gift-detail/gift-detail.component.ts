@@ -79,19 +79,40 @@ import {
               *ngIf="gift.status === GiftStatus.AVAILABLE"
               class="card bg-gradient-to-br from-baby-pink/20 to-primary-100/30"
             >
-              <div class="text-center">
-                <div class="text-4xl mb-3">🎁</div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">¿Quieres regalarlo?</h3>
-                <p class="text-gray-600 mb-4">
-                  Puedes hacerte cargo del regalo completo y nos encargamos de conseguirlo
+              <div class="space-y-4 text-center">
+                <div class="text-4xl">🎁</div>
+                <h3 class="text-xl font-bold text-gray-800">¿Quieres regalarlo?</h3>
+                <p class="text-gray-600">
+                  Puedes hacerte cargo del regalo completo y nosotros nos encargamos de conseguirlo con todo el
+                  cariño. Resérvalo aquí y cuéntanos cómo prefieres apoyarnos.
                 </p>
-                <input type="text" [(ngModel)]="userName" placeholder="Tu nombre" class="input-field mb-3" />
+
+                <div class="text-left bg-white/80 rounded-2xl p-4 shadow-inner space-y-2">
+                  <p class="text-sm font-semibold text-gray-800">Opciones para apoyar:</p>
+                  <ul class="text-sm text-gray-600 space-y-1">
+                    <li>🎁 Traer el regalo el día del baby shower</li>
+                    <li>💌 Aportar el valor para que nosotros lo compremos por ti</li>
+                  </ul>
+                </div>
+
+                <div class="text-left bg-white/60 rounded-2xl p-4 text-sm text-gray-700 space-y-1">
+                  <p class="font-semibold text-gray-800">💳 Si deseas aportar el valor:</p>
+                  <p>Banco: Banco Pichincha</p>
+                  <p>Cuenta: Ahorro transaccional</p>
+                  <p>Número: 2203444745</p>
+                  <p>Titular: Marco Clavijo</p>
+                  <p class="text-xs text-gray-500">
+                    Cuando realices el aporte, confírmalo en la app para marcar el regalito como reservado.
+                  </p>
+                </div>
+
+                <input type="text" [(ngModel)]="userName" placeholder="Tu nombre" class="input-field" />
                 <button
                   (click)="reserveComplete()"
                   [disabled]="!userName.trim() || reserving"
                   class="btn-primary w-full disabled:opacity-50"
                 >
-                  {{ reserving ? 'Procesando...' : '¡Quiero regalarlo! 🎉' }}
+                  {{ reserving ? 'Procesando...' : 'Resérvalo aquí 😊' }}
                 </button>
               </div>
             </div>
