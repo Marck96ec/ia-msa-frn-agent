@@ -45,8 +45,9 @@ import { EventHeaderComponent, LoadingSpinnerComponent, ErrorMessageComponent } 
         >
           <p class="font-semibold text-gray-800 mb-1">💞 Regalos compartidos</p>
           <p class="leading-relaxed">
-            Estos regalos pueden ser apoyados entre una o varias personas. Puedes aportar una parte del valor o
-            reservar el regalo completo y traerlo el día del baby shower. Tú eliges la forma de apoyar.
+            En estos regalos puedes elegir una de estas opciones:<br />
+            • Aportar cualquier monto para completarlo entre varias personas.<br />
+            • Reservar el regalo completo y traerlo el día del baby shower.
           </p>
         </div>
 
