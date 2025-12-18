@@ -39,6 +39,17 @@ import { EventHeaderComponent, LoadingSpinnerComponent, ErrorMessageComponent } 
 
         <app-error-message *ngIf="error" [error]="error" (retry)="loadGifts()" />
 
+        <div
+          *ngIf="!loading && !error && activeFilter === 'PARTIALLY_FUNDED' && filteredGifts.length > 0"
+          class="card bg-white/80 border border-primary-100 text-sm text-gray-700 mb-4"
+        >
+          <p class="font-semibold text-gray-800 mb-1">💞 Regalos compartidos</p>
+          <p class="leading-relaxed">
+            Estos regalos permiten que una o varias personas aporten el valor juntos, o también puedes reservarlo y
+            llevarlo el día del baby shower. Tú decides cómo apoyar.
+          </p>
+        </div>
+
         <!-- Gifts Grid -->
         <div *ngIf="!loading && !error" class="space-y-4">
           <div
