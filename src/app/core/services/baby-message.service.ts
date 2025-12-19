@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 import { BabyMessage, CreateBabyMessageRequest } from '../models';
@@ -24,7 +24,11 @@ export class BabyMessageService {
    * GET /api/v1/events/{eventSlug}/baby-messages
    * Obtiene todos los mensajes para el bebé (Admin)
    */
-  getBabyMessages(eventSlug: string): Observable<BabyMessage[]> {
-    return this.http.get<BabyMessage[]>(`${this.baseUrl}/${eventSlug}/baby-messages`);
+  getBabyMessages(eventSlug: string, includeUnpublished = true): Observable<BabyMessage[]> {
+    let params = new HttpParams();
+    if (includeUnpublished !== undefined) {
+      params = params.set('includeUnpublished', String(includeUnpublished));
+    }
+    return this.http.get<BabyMessage[]>(`${this.baseUrl}/${eventSlug}/baby-messages`, { params });
   }
 }

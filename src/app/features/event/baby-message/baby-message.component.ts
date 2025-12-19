@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BabyMessageService, AuthService, StateService } from '@core/services';
-import { CreateBabyMessageRequest } from '@core/models';
+import { BabyMessage, CreateBabyMessageRequest } from '@core/models';
 import {
   EventHeaderComponent,
   LoadingSpinnerComponent,
@@ -33,6 +33,49 @@ import {
 
       <div class="max-w-2xl mx-auto px-6 py-8 pb-32">
         <div *ngIf="!submitted" class="space-y-6 animate-slide-up">
+          <div class="card bg-white/80 border border-baby-blue/40 shadow-soft animate-slide-up">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-3xl">💌</span>
+              <div>
+                <p class="text-sm font-semibold text-baby-blue-700 uppercase tracking-wide">Mensajes llenos de amor</p>
+                <p class="text-xs text-gray-500">Algunas dedicatorias ya recibidas</p>
+              </div>
+            </div>
+
+            <ng-container *ngIf="messagesLoading">
+              <div class="flex items-center gap-3 text-primary-600 animate-pulse">
+                <span class="text-2xl">✨</span>
+                <span>Recopilando mensajes especiales...</span>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="!messagesLoading && messagesError">
+              <div class="text-sm text-red-500 flex items-center gap-2">
+                <span>⚠️</span>
+                <span>No pudimos cargar los mensajes. Puedes intentarlo más tarde.</span>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="!messagesLoading && !messagesError">
+              <ng-container *ngIf="recentMessages.length > 0; else noMessages">
+                <div class="space-y-3">
+                  <div
+                    *ngFor="let m of recentMessages"
+                    class="p-3 rounded-2xl bg-gradient-to-r from-white to-baby-blue/20 border border-white/80 shadow-inner animate-slide-up"
+                  >
+                    <p class="text-gray-700 text-sm leading-relaxed">“{{ m.messageText }}”</p>
+                    <p class="text-right text-xs font-semibold text-gray-600 mt-2">— {{ m.guestName || 'Anónimo' }}</p>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #noMessages>
+                <p class="text-sm text-gray-600">
+                  Sé la primera persona en dejarle palabras bonitas. ¡Tu mensaje quedará guardado para siempre!
+                </p>
+              </ng-template>
+            </ng-container>
+          </div>
+
           <div class="text-center">
             <div class="text-6xl mb-4">👶</div>
             <h2 class="text-3xl font-bold text-gray-800 mb-3 text-balance">Dale la bienvenida al pequeñito</h2>
@@ -118,6 +161,9 @@ export class BabyMessageComponent implements OnInit {
   error: any = null;
 
   quickEmojis = ['💙', '💗', '🍼', '👶', '✨', '🌟', '💫', '🎈', '🎀', '🧸'];
+  recentMessages: BabyMessage[] = [];
+  messagesLoading = false;
+  messagesError = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -137,6 +183,10 @@ export class BabyMessageComponent implements OnInit {
     const savedName = this.authService.getUserName();
     if (savedName) {
       this.userName = savedName;
+    }
+
+    if (this.slug) {
+      this.loadRecentMessages();
     }
   }
 
@@ -183,5 +233,22 @@ export class BabyMessageComponent implements OnInit {
 
   navigate(path: string): void {
     this.router.navigate([`/e/${this.slug}/${path}`]);
+  }
+
+  private loadRecentMessages(): void {
+    this.messagesLoading = true;
+    this.messagesError = false;
+
+    this.babyMessageService.getBabyMessages(this.slug, false).subscribe({
+      next: messages => {
+        this.recentMessages = (messages || []).slice(0, 3);
+        this.messagesLoading = false;
+      },
+      error: err => {
+        console.warn('Error cargando mensajes del bebé', err);
+        this.messagesLoading = false;
+        this.messagesError = true;
+      }
+    });
   }
 }
