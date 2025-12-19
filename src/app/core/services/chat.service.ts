@@ -19,4 +19,15 @@ export class ChatService {
   sendMessage(request: ChatRequest): Observable<ChatResponse> {
     return this.http.post<ChatResponse>(this.baseUrl, request);
   }
+
+  /**
+   * GET /api/v1/chat/simple?message={prompt}
+   * Obtiene una respuesta simple en texto plano
+   */
+  getSimpleMessage(prompt: string): Observable<string> {
+    return this.http.get(`${this.baseUrl}/simple`, {
+      params: { message: prompt },
+      responseType: 'text'
+    });
+  }
 }

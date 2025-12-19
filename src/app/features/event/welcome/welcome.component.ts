@@ -1,118 +1,133 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { EventService, StateService } from '@core/services';
+import { EventService, StateService, ChatService } from '@core/services';
 import { Event } from '@core/models';
-import { LoadingSpinnerComponent, ErrorMessageComponent, FooterActionsComponent } from '@shared/components';
+import { LoadingSpinnerComponent, ErrorMessageComponent } from '@shared/components';
 
 @Component({
   selector: 'app-welcome',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent, ErrorMessageComponent, FooterActionsComponent],
+  imports: [CommonModule, LoadingSpinnerComponent, ErrorMessageComponent],
   template: `
-    <div class="min-h-screen flex flex-col">
-      <app-loading-spinner *ngIf="loading" [fullScreen]="true" message="Preparando todo para ti..." />
+    <div class="min-h-screen flex flex-col bg-gradient-to-b from-baby-pink/15 via-white to-baby-blue/15">
+      <app-loading-spinner *ngIf="loading" [fullScreen]="true" message="Preparando tu invitación..." />
 
       <app-error-message *ngIf="error" [error]="error" (retry)="loadEvent()" />
 
-      <div *ngIf="!loading && !error && event" class="flex-1 pb-32">
-        <!-- Hero Image -->
-        <div class="relative h-72 bg-gradient-to-br from-baby-pink to-baby-blue overflow-hidden">
-          <img
-            *ngIf="event.imageUrl"
-            [src]="event.imageUrl"
-            [alt]="event.name"
-            class="w-full h-full object-cover object-center scale-105"
-          />
-          <div
-            class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/15 to-transparent backdrop-blur-[1px]"
-          ></div>
-          <div class="absolute bottom-6 left-6 right-6 text-white drop-shadow-lg">
-            <div class="text-5xl mb-2">🍼</div>
-            <h1 class="text-3xl font-bold text-balance">{{ event.name }}</h1>
+      <div *ngIf="!loading && !error && event" class="flex-1">
+        <!-- Hero emocional -->
+        <div class="relative h-80 bg-gradient-to-br from-baby-pink to-baby-blue overflow-hidden">
+          <img *ngIf="event.imageUrl" [src]="event.imageUrl" [alt]="event.name" class="w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+            <p class="text-4xl mb-2">👶💙</p>
+            <h1 class="text-2xl font-bold leading-tight">Bienvenido al Baby Shower de</h1>
+            <p class="text-3xl font-bold text-baby-yellow">{{ event.babyName || 'nuestro bebé' }}</p>
           </div>
         </div>
 
-        <!-- Context chips -->
-        <div class="-mt-6 px-6">
-          <div
-            class="max-w-2xl mx-auto bg-white/90 backdrop-blur-sm shadow-soft rounded-2xl border border-white/70 px-4 py-3 flex flex-wrap gap-3 text-sm text-gray-800"
-          >
-            <span class="chip-active flex items-center gap-2 text-base h-11 px-3"
-              ><span class="text-lg">📅</span>{{ formatDate(event.eventDate) }}</span
-            >
-            <span class="chip flex items-center gap-2 text-base h-11 px-3"
-              ><span class="text-lg">⏰</span>{{ formatTime(event.eventDate) }}</span
-            >
-            <span class="chip flex items-center gap-2 text-base h-11 px-3"
-              ><span class="text-lg">📍</span>{{ event.location }}</span
-            >
-          </div>
-        </div>
+        <div class="px-5 pt-8 pb-10">
+          <div class="max-w-lg mx-auto space-y-5">
+            <!-- Mensaje emocional principal (dinámico desde IA) -->
+            <div class="card text-center space-y-3 shadow-xl min-h-[100px]">
+              <!-- Loading del mensaje -->
+              <div *ngIf="loadingWelcomeMessage" class="flex items-center justify-center gap-2 py-2">
+                <span class="animate-pulse text-2xl">💭</span>
+                <span class="text-gray-400 text-sm animate-pulse">Preparando un mensaje especial...</span>
+              </div>
 
-        <!-- Welcome Message -->
-        <div class="px-6 py-8 max-w-2xl mx-auto space-y-6">
-          <div class="card mb-6">
-            <p class="text-xl text-gray-700 leading-relaxed text-balance">
-              {{
-                event.welcomeMessage ||
-                  'Te invitamos con mucho cariño a compartir este momento especial. Tu presencia ya es el mejor regalo 💝'
-              }}
-            </p>
-          </div>
+              <!-- Error del mensaje (fallback silencioso) -->
+              <ng-container *ngIf="!loadingWelcomeMessage && welcomeMessageError">
+                <p class="text-xl text-gray-800 leading-relaxed font-medium">
+                  La llegada de {{ event.babyName || 'nuestro bebé' }} es un momento mágico que queremos celebrar
+                  contigo. 👶💕
+                </p>
+              </ng-container>
 
-          <!-- Event Details -->
-          <div class="space-y-3">
-            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide px-1">Detalles</h2>
+              <!-- Mensaje dinámico de IA -->
+              <p
+                *ngIf="!loadingWelcomeMessage && !welcomeMessageError && welcomeMessage"
+                class="text-xl text-gray-800 leading-relaxed font-medium"
+              >
+                {{ welcomeMessage }}
+              </p>
+            </div>
 
-            <!-- Location only (date/time ya están en chips) -->
-            <div class="card-sm flex items-start gap-4">
-              <div class="text-3xl">📍</div>
-              <div class="flex-1">
-                <h3 class="font-semibold text-gray-800 mb-1">Dónde nos vemos</h3>
-                <p class="text-gray-700 font-semibold">{{ event.location }}</p>
-                <p class="text-gray-500 text-sm">Toca para abrir en Maps</p>
-                <button *ngIf="event.locationUrl" (click)="openMaps()" class="mt-3 btn-primary w-full justify-center">
-                  Abrir en Maps
-                </button>
+            <!-- CTA Principal - Acción inmediata -->
+            <div
+              class="card bg-gradient-to-r from-baby-pink/30 via-white to-baby-blue/30 border-2 border-baby-pink/40 text-center space-y-4"
+            >
+              <div>
+                <p class="text-sm text-gray-600 mb-1">Tu siguiente paso</p>
+                <h2 class="text-xl font-bold text-gray-900">¿Podrás acompañarnos?</h2>
+              </div>
+              <button (click)="onContinue()" class="btn-primary w-full text-lg py-4 justify-center shadow-lg">
+                Confirmar mi asistencia ✨
+              </button>
+              <p class="text-xs text-gray-500">Solo toma 30 segundos</p>
+            </div>
+
+            <!-- Cuándo y dónde - Info esencial compacta -->
+            <div class="card space-y-4">
+              <h3 class="text-sm font-bold text-gray-600 uppercase tracking-wide text-center">📍 Cuándo y dónde</h3>
+
+              <div class="space-y-3">
+                <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                  <span class="text-2xl">📅</span>
+                  <div>
+                    <p class="font-bold text-gray-900">{{ formatDate(event.eventDate) }}</p>
+                    <p class="text-sm text-gray-600">{{ formatTime(event.eventDate) }} hrs</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                  <span class="text-2xl">📍</span>
+                  <div class="flex-1">
+                    <p class="font-bold text-gray-900">{{ event.location }}</p>
+                    <button
+                      *ngIf="event.locationUrl"
+                      (click)="openMaps()"
+                      class="text-sm text-primary-600 font-semibold underline underline-offset-2 mt-1"
+                    >
+                      Ver en Google Maps →
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Description -->
-            <div *ngIf="event.description" class="card-sm">
-              <p class="text-gray-600 italic">{{ event.description }}</p>
+            <!-- Mensaje personalizado (si existe) -->
+            <div *ngIf="event.welcomeMessage" class="card-sm bg-baby-yellow/20 border border-baby-yellow/40">
+              <p class="text-gray-700 italic text-center">"{{ event.welcomeMessage }}"</p>
             </div>
-          </div>
 
-          <!-- Quick Actions -->
-          <div class="pt-2 space-y-3">
-            <div class="grid grid-cols-2 gap-3">
-              <button (click)="navigate('gifts')" class="btn-outline flex items-center justify-center gap-2 py-3">
-                <span class="text-xl">🎁</span>
-                <span class="text-sm font-semibold">Ver regalos</span>
-              </button>
-              <button (click)="navigate('chat')" class="btn-outline flex items-center justify-center gap-2 py-3">
-                <span class="text-xl">💬</span>
-                <span class="text-sm font-semibold">¿Dudas?</span>
+            <!-- Acciones secundarias - después de lo principal -->
+            <div class="space-y-3 pt-2">
+              <p class="text-center text-sm text-gray-500">También puedes explorar</p>
+              <div class="grid grid-cols-2 gap-3">
+                <button (click)="navigate('gifts')" class="btn-outline flex flex-col items-center gap-1 py-4">
+                  <span class="text-2xl">🎁</span>
+                  <span class="text-sm font-semibold">Lista de regalos</span>
+                </button>
+                <button (click)="navigate('baby-message')" class="btn-outline flex flex-col items-center gap-1 py-4">
+                  <span class="text-2xl">💌</span>
+                  <span class="text-sm font-semibold">Mensaje al bebé</span>
+                </button>
+              </div>
+              <button (click)="navigate('chat')" class="btn-outline w-full flex items-center justify-center gap-2 py-3">
+                <span class="text-lg">💬</span>
+                <span class="text-sm font-semibold">¿Tienes dudas? Escríbenos</span>
               </button>
             </div>
-            <button
-              (click)="navigate('baby-message')"
-              class="btn-outline w-full flex items-center justify-center gap-2 py-3"
-            >
-              <span class="text-xl">👶</span>
-              <span class="text-sm font-semibold">Dejar mensaje para el bebé</span>
-            </button>
+
+            <!-- Nota adicional (si existe) -->
+            <p *ngIf="event.description" class="text-center text-sm text-gray-500 pt-2">
+              {{ event.description }}
+            </p>
           </div>
         </div>
       </div>
-
-      <!-- Footer -->
-      <app-footer-actions
-        *ngIf="event"
-        [actions]="[{ label: 'Registrar mi asistencia', action: 'continue', icon: '✨', primary: true }]"
-        (actionClicked)="onContinue()"
-      />
     </div>
   `
 })
@@ -120,13 +135,19 @@ export class WelcomeComponent implements OnInit {
   event: Event | null = null;
   loading = true;
   error: any = null;
+
+  welcomeMessage = '';
+  loadingWelcomeMessage = false;
+  welcomeMessageError = false;
+
   private slug: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private eventService: EventService,
-    private stateService: StateService
+    private stateService: StateService,
+    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
@@ -143,6 +164,7 @@ export class WelcomeComponent implements OnInit {
         this.event = event;
         this.stateService.setCurrentEvent(event);
         this.loading = false;
+        this.loadWelcomeMessage(event.babyName);
       },
       error: err => {
         this.loading = false;
@@ -193,5 +215,29 @@ export class WelcomeComponent implements OnInit {
 
   onContinue(): void {
     this.router.navigate([`/e/${this.slug}/rsvp`]);
+  }
+
+  private loadWelcomeMessage(babyName: string | undefined): void {
+    this.loadingWelcomeMessage = true;
+    this.welcomeMessageError = false;
+
+    const prompt = `Genera un mensaje de bienvenida corto, emotivo y cercano para una app web del Baby Shower de Thiago.
+El mensaje debe mencionar explícitamente a sus padres Amanda y Marco.
+Usa máximo 2 oraciones breves, tono familiar y cálido, con 1 emoji sutil.
+Debe leerse rápido en pantalla y transmitir gratitud y conexión emocional.
+No uses comillas, ni saltos de línea.
+Devuelve únicamente el texto final listo para mostrarse en la interfaz.`;
+
+    this.chatService.getSimpleMessage(prompt).subscribe({
+      next: message => {
+        this.welcomeMessage = message.trim();
+        this.loadingWelcomeMessage = false;
+      },
+      error: err => {
+        console.warn('Error cargando mensaje de bienvenida:', err);
+        this.loadingWelcomeMessage = false;
+        this.welcomeMessageError = true;
+      }
+    });
   }
 }
