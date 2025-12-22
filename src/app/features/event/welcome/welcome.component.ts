@@ -134,6 +134,47 @@ import { LoadingSpinnerComponent, ErrorMessageComponent } from '@shared/componen
               <p class="text-gray-700 italic text-center">"{{ event.welcomeMessage }}"</p>
             </div>
 
+            <!-- Curiosidad del día -->
+            <div class="curiosity-card">
+              <div class="flex items-start gap-3">
+                <div class="curiosity-icon">
+                  <span class="text-2xl">🧒</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-2">
+                    <p class="text-xs font-bold text-amber-700 uppercase tracking-wide">¿Sabías que...?</p>
+                    <button
+                      *ngIf="!loadingCuriosity"
+                      (click)="loadNewCuriosity()"
+                      class="text-xs text-amber-600 hover:text-amber-700 font-medium transition-smooth"
+                      aria-label="Cargar nueva curiosidad"
+                    >
+                      🔄 Otra
+                    </button>
+                  </div>
+
+                  <!-- Loading -->
+                  <div *ngIf="loadingCuriosity" class="flex items-center gap-2">
+                    <span class="animate-bounce text-lg">💭</span>
+                    <span class="text-gray-400 text-sm animate-pulse">Buscando un dato curioso...</span>
+                  </div>
+
+                  <!-- Curiosidad -->
+                  <p *ngIf="!loadingCuriosity && curiosityFact" class="text-gray-700 text-sm leading-relaxed">
+                    {{ curiosityFact }}
+                  </p>
+
+                  <!-- Fallback si hay error -->
+                  <p
+                    *ngIf="!loadingCuriosity && !curiosityFact && curiosityError"
+                    class="text-gray-600 text-sm leading-relaxed"
+                  >
+                    Los bebés pueden reconocer la voz de su mamá desde el vientre. ¡El amor empieza antes de nacer! 👶💕
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <!-- Acciones secundarias - después de lo principal -->
             <div class="space-y-3 pt-2">
               <p class="text-center text-sm text-gray-500">También puedes explorar</p>
@@ -263,6 +304,36 @@ import { LoadingSpinnerComponent, ErrorMessageComponent } from '@shared/componen
           transform: scale(1.2);
         }
       }
+
+      /* Curiosity card */
+      .curiosity-card {
+        background: linear-gradient(135deg, rgba(254, 243, 199, 0.8), rgba(254, 215, 170, 0.6));
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        border-radius: 1rem;
+        padding: 1rem;
+        transition: all 0.2s ease-out;
+      }
+
+      .curiosity-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+      }
+
+      .curiosity-icon {
+        flex-shrink: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .transition-smooth {
+        transition: all 0.2s ease-out;
+      }
     `
   ]
 })
@@ -276,6 +347,10 @@ export class WelcomeComponent implements OnInit, OnDestroy {
   welcomeMessage = '';
   loadingWelcomeMessage = false;
   welcomeMessageError = false;
+
+  curiosityFact = '';
+  loadingCuriosity = false;
+  curiosityError = false;
 
   isMusicPlaying = false;
 
@@ -304,6 +379,7 @@ export class WelcomeComponent implements OnInit, OnDestroy {
         this.stateService.setCurrentEvent(event);
         this.loading = false;
         this.loadWelcomeMessage(event.babyName);
+        this.loadCuriosity();
       },
       error: err => {
         this.loading = false;
@@ -407,5 +483,34 @@ Devuelve únicamente el texto final listo para mostrarse en la interfaz.`;
         this.welcomeMessageError = true;
       }
     });
+  }
+
+  private loadCuriosity(): void {
+    this.loadingCuriosity = true;
+    this.curiosityError = false;
+
+    const prompt = `Genera UN dato curioso, sorprendente y educativo sobre bebés recién nacidos o el embarazo.
+Debe ser un hecho real, verificable y fascinante.
+Usa máximo 2 oraciones breves y un tono cálido y asombroso.
+Incluye 1 emoji al final que sea relevante al dato.
+No uses comillas ni saltos de línea.
+Empieza directamente con el dato, sin "¿Sabías que...?".
+Devuelve únicamente el texto final.`;
+
+    this.chatService.getSimpleMessage(prompt).subscribe({
+      next: fact => {
+        this.curiosityFact = fact.trim();
+        this.loadingCuriosity = false;
+      },
+      error: err => {
+        console.warn('Error cargando curiosidad:', err);
+        this.loadingCuriosity = false;
+        this.curiosityError = true;
+      }
+    });
+  }
+
+  loadNewCuriosity(): void {
+    this.loadCuriosity();
   }
 }
