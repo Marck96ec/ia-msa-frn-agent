@@ -199,7 +199,7 @@ import { EventHeaderComponent, LoadingSpinnerComponent, ErrorMessageComponent } 
                   </a>
                 </div>
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="font-semibold text-amber-600">\${{ gift.price }}</span>
+                  <span *ngIf="shouldShowPrice(gift)" class="font-semibold text-amber-600">\${{ gift.price }}</span>
                   <span [class]="getBadgeClass(gift.status)" class="badge">
                     {{ getStatusLabel(gift.status) }}
                   </span>
@@ -391,6 +391,10 @@ export class GiftsListComponent implements OnInit {
         this.filteredGifts = this.gifts.filter(g => g.status === this.activeFilter);
         break;
     }
+  }
+
+  shouldShowPrice(gift: Gift): boolean {
+    return gift.status !== GiftStatus.RESERVED && gift.status !== GiftStatus.FULLY_FUNDED;
   }
 
   getStatusLabel(status: GiftStatus): string {

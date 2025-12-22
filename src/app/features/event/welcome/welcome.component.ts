@@ -489,13 +489,31 @@ Devuelve únicamente el texto final listo para mostrarse en la interfaz.`;
     this.loadingCuriosity = true;
     this.curiosityError = false;
 
-    const prompt = `Genera UN dato curioso, sorprendente y educativo sobre bebés recién nacidos o el embarazo.
-Debe ser un hecho real, verificable y fascinante.
+    // Categorías aleatorias para variar las curiosidades
+    const categories = [
+      'el desarrollo del cerebro de un bebé',
+      'los sentidos de un recién nacido',
+      'el embarazo y gestación',
+      'los primeros días de vida',
+      'la conexión entre mamá y bebé',
+      'el sueño de los bebés',
+      'los reflejos innatos de los bebés',
+      'la alimentación del recién nacido',
+      'las emociones de los bebés',
+      'el crecimiento en el primer año',
+      'la comunicación de los bebés',
+      'los hitos del desarrollo infantil'
+    ];
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    const randomId = Math.random().toString(36).substring(7);
+
+    const prompt = `[ID:${randomId}] Genera UN dato curioso, sorprendente y poco conocido sobre ${randomCategory}.
+Debe ser un hecho científico real y fascinante que la mayoría de personas no conoce.
 Usa máximo 2 oraciones breves y un tono cálido y asombroso.
 Incluye 1 emoji al final que sea relevante al dato.
 No uses comillas ni saltos de línea.
 Empieza directamente con el dato, sin "¿Sabías que...?".
-Devuelve únicamente el texto final.`;
+Devuelve únicamente el texto final, diferente a cualquier respuesta anterior.`;
 
     this.chatService.getSimpleMessage(prompt).subscribe({
       next: fact => {
