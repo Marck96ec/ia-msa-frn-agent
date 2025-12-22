@@ -60,3 +60,65 @@ export interface Statistics {
   totalContributions: number;
   averageContributionAmount: number;
 }
+
+// Gift Reservation Report
+export interface GiftReservationReport {
+  eventId: number;
+  eventSlug: string;
+  eventName: string;
+  totalRecords: number;
+  generatedAt: string;
+  items: GiftReservationReportItem[];
+}
+
+export interface GiftReservationReportItem {
+  giftId: number;
+  giftName: string;
+  giftStatus: GiftReservationStatus;
+  commitmentType: CommitmentType;
+  reserverUserId: string;
+  reserverName: string;
+  reserverEmail?: string;
+  reserverPhone?: string;
+  contributionAmount?: number;
+  notes?: string;
+  reservedAt: string;
+}
+
+export enum GiftReservationStatus {
+  AVAILABLE = 'AVAILABLE',
+  RESERVED = 'RESERVED',
+  PARTIALLY_FUNDED = 'PARTIALLY_FUNDED',
+  FULLY_FUNDED = 'FULLY_FUNDED',
+  INACTIVE = 'INACTIVE'
+}
+
+export enum CommitmentType {
+  FULL_RESERVATION = 'FULL_RESERVATION',
+  PARTIAL_CONTRIBUTION = 'PARTIAL_CONTRIBUTION'
+}
+
+// Attendee Summary
+export interface AttendeeSummary {
+  eventId: number;
+  eventSlug: string;
+  eventName: string;
+  totalConfirmed: number;
+  totalGuests: number;
+  generatedAt: string;
+  attendees: AttendeeDetail[];
+}
+
+export interface AttendeeDetail {
+  id: number;
+  eventId: number;
+  userId: string;
+  guestName: string;
+  guestEmail?: string;
+  guestPhone?: string;
+  status: string;
+  guestsCount: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt?: string;
+}

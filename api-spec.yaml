@@ -51,18 +51,18 @@ paths:
               simple:
                 summary: Mensaje simple
                 value:
-                  message: "Explícame qué es Spring AI"
+                  message: 'Explícame qué es Spring AI'
               withConfig:
                 summary: Mensaje con configuración
                 value:
-                  message: "Genera un poema sobre programación"
+                  message: 'Genera un poema sobre programación'
                   temperature: 0.9
                   maxTokens: 500
               withConversation:
                 summary: Mensaje en conversación existente
                 value:
-                  message: "¿Puedes darme un ejemplo?"
-                  conversationId: "conv-123"
+                  message: '¿Puedes darme un ejemplo?'
+                  conversationId: 'conv-123'
                   temperature: 0.7
       responses:
         '200':
@@ -75,45 +75,45 @@ paths:
                 success:
                   summary: Respuesta exitosa
                   value:
-                    response: "Spring AI es un framework de Spring que facilita la integración..."
-                    conversationId: "conv-abc-123"
-                    timestamp: "2025-12-17T10:30:00"
+                    response: 'Spring AI es un framework de Spring que facilita la integración...'
+                    conversationId: 'conv-abc-123'
+                    timestamp: '2025-12-17T10:30:00'
                     tokenUsage:
                       promptTokens: 15
                       completionTokens: 120
                       totalTokens: 135
-                    userId: "+593991234567"
+                    userId: '+593991234567'
                     userProfile:
-                      userId: "+593991234567"
-                      preferredLanguage: "es-EC"
-                      tone: "WARM"
-                      verbosity: "MEDIUM"
-                      emojiPreference: "LIGHT"
-                    guardrailAction: "ALLOW"
-                    guardrailReason: "NONE"
+                      userId: '+593991234567'
+                      preferredLanguage: 'es-EC'
+                      tone: 'WARM'
+                      verbosity: 'MEDIUM'
+                      emojiPreference: 'LIGHT'
+                    guardrailAction: 'ALLOW'
+                    guardrailReason: 'NONE'
                     quickReplies:
-                      - "Cuéntame más"
-                      - "Dame un ejemplo"
-                      - "¿Qué más puedes hacer?"
+                      - 'Cuéntame más'
+                      - 'Dame un ejemplo'
+                      - '¿Qué más puedes hacer?'
                 blocked:
                   summary: Mensaje bloqueado por guardrails
                   value:
-                    response: "Tu mensaje es demasiado largo (850 caracteres). Por favor, envía un mensaje de máximo 800 caracteres."
-                    conversationId: "conv-abc-124"
-                    timestamp: "2025-12-17T10:32:00"
-                    userId: "anon-550e8400-e29b-41d4-a716-446655440000"
+                    response: 'Tu mensaje es demasiado largo (850 caracteres). Por favor, envía un mensaje de máximo 800 caracteres.'
+                    conversationId: 'conv-abc-124'
+                    timestamp: '2025-12-17T10:32:00'
+                    userId: 'anon-550e8400-e29b-41d4-a716-446655440000'
                     userProfile:
-                      userId: "anon-550e8400-e29b-41d4-a716-446655440000"
-                      preferredLanguage: "es-EC"
-                      tone: "WARM"
-                      verbosity: "MEDIUM"
-                      emojiPreference: "LIGHT"
-                    guardrailAction: "BLOCK"
-                    guardrailReason: "TOO_LONG"
+                      userId: 'anon-550e8400-e29b-41d4-a716-446655440000'
+                      preferredLanguage: 'es-EC'
+                      tone: 'WARM'
+                      verbosity: 'MEDIUM'
+                      emojiPreference: 'LIGHT'
+                    guardrailAction: 'BLOCK'
+                    guardrailReason: 'TOO_LONG'
                     quickReplies:
-                      - "Resumir mi pregunta"
-                      - "Dividir en partes"
-                      - "Ayuda"
+                      - 'Resumir mi pregunta'
+                      - 'Dividir en partes'
+                      - 'Ayuda'
         '400':
           description: Error de validación en la solicitud
           content:
@@ -124,10 +124,10 @@ paths:
                 validationError:
                   summary: Error de validación
                   value:
-                    timestamp: "2025-12-17T10:30:00"
+                    timestamp: '2025-12-17T10:30:00'
                     status: 400
                     errors:
-                      message: "El mensaje no puede estar vacío"
+                      message: 'El mensaje no puede estar vacío'
         '500':
           description: Error interno del servidor
           content:
@@ -138,10 +138,10 @@ paths:
                 serverError:
                   summary: Error del servidor
                   value:
-                    timestamp: "2025-12-17T10:30:00"
+                    timestamp: '2025-12-17T10:30:00'
                     status: 500
-                    message: "Error interno del servidor"
-                    details: "Error al procesar el mensaje con el modelo de IA"
+                    message: 'Error interno del servidor'
+                    details: 'Error al procesar el mensaje con el modelo de IA'
 
   /api/v1/chat/simple:
     get:
@@ -161,7 +161,7 @@ paths:
             type: string
             minLength: 1
             maxLength: 2000
-          example: "Hola, ¿cómo estás?"
+          example: 'Hola, ¿cómo estás?'
       responses:
         '200':
           description: Respuesta exitosa del modelo
@@ -169,7 +169,7 @@ paths:
             text/plain:
               schema:
                 type: string
-              example: "¡Hola! Estoy funcionando correctamente. ¿En qué puedo ayudarte hoy?"
+              example: '¡Hola! Estoy funcionando correctamente. ¿En qué puedo ayudarte hoy?'
         '400':
           description: Error de validación
           content:
@@ -204,18 +204,18 @@ paths:
                   summary: Modelos disponibles
                   value:
                     models:
-                      - id: "gpt-4o"
-                        object: "model"
+                      - id: 'gpt-4o'
+                        object: 'model'
                         created: 1687882411
-                        ownedBy: "openai"
-                      - id: "gpt-4o-mini"
-                        object: "model"
+                        ownedBy: 'openai'
+                      - id: 'gpt-4o-mini'
+                        object: 'model'
                         created: 1687882410
-                        ownedBy: "openai"
-                      - id: "gpt-4-turbo"
-                        object: "model"
+                        ownedBy: 'openai'
+                      - id: 'gpt-4-turbo'
+                        object: 'model'
                         created: 1687882409
-                        ownedBy: "openai"
+                        ownedBy: 'openai'
                     totalModels: 3
         '401':
           description: Error de autenticación
@@ -227,10 +227,10 @@ paths:
                 unauthorized:
                   summary: API Key inválida
                   value:
-                    timestamp: "2025-12-17T10:30:00"
+                    timestamp: '2025-12-17T10:30:00'
                     status: 401
-                    message: "Error de autenticación"
-                    details: "API Key, Organization ID o Project ID inválidos"
+                    message: 'Error de autenticación'
+                    details: 'API Key, Organization ID o Project ID inválidos'
         '500':
           description: Error interno del servidor
           content:
@@ -241,7 +241,7 @@ paths:
   # ============================================================================
   # EVENTOS
   # ============================================================================
-  
+
   /api/v1/events/{slug}:
     get:
       tags:
@@ -256,7 +256,7 @@ paths:
           description: Identificador único del evento
           schema:
             type: string
-          example: "baby-shower-maria-2025"
+          example: 'baby-shower-maria-2025'
       responses:
         '200':
           description: Información del evento
@@ -414,7 +414,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-    
+
     put:
       tags:
         - RSVP
@@ -469,6 +469,27 @@ paths:
                 items:
                   $ref: '#/components/schemas/RSVPResponse'
 
+  /api/v1/events/{eventSlug}/attendees/summary:
+    get:
+      tags:
+        - RSVP
+      summary: Resumen de asistentes confirmados
+      description: Lista de asistentes confirmados con el total de personas (incluyendo acompañantes).
+      operationId: getAttendeeSummary
+      parameters:
+        - name: eventSlug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resumen de asistentes confirmados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendeeSummaryResponse'
+
   /api/v1/events/{eventSlug}/rsvps:
     get:
       tags:
@@ -516,7 +537,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/GiftResponse'
-    
+
     post:
       tags:
         - Gifts
@@ -564,6 +585,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/GiftSummaryResponse'
 
+  /api/v1/events/{eventSlug}/gifts/reservations/report:
+    get:
+      tags:
+        - Gifts
+      summary: Reporte de regalos reservados o completados
+      description: Lista los regalos con estado reservado o completado junto a la persona que los apartó.
+      operationId: getGiftReservationReport
+      parameters:
+        - name: eventSlug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reporte generado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiftReservationReportResponse'
+
   /api/v1/gifts/{giftId}:
     get:
       tags:
@@ -591,7 +633,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-    
+
     put:
       tags:
         - Gifts
@@ -618,7 +660,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GiftResponse'
-    
+
     delete:
       tags:
         - Gifts
@@ -734,7 +776,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-    
+
     delete:
       tags:
         - Commitments
@@ -787,7 +829,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/IdeaResponse'
-    
+
     get:
       tags:
         - Ideas
@@ -840,7 +882,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BabyMessageResponse'
-    
+
     get:
       tags:
         - Baby Messages
@@ -909,12 +951,12 @@ components:
           description: Mensaje o pregunta del usuario
           minLength: 1
           maxLength: 4000
-          example: "Explícame qué es Spring AI en 3 párrafos"
+          example: 'Explícame qué es Spring AI en 3 párrafos'
         conversationId:
           type: string
           description: ID de conversación para mantener contexto entre mensajes
           pattern: '^[a-zA-Z0-9\-_]+$'
-          example: "conv-123-abc"
+          example: 'conv-123-abc'
         temperature:
           type: number
           format: double
@@ -942,24 +984,24 @@ components:
               description: |
                 ID único del usuario (phone, sessionId, etc.). 
                 Si no se proporciona, se genera un anonymousId.
-              example: "+593991234567"
+              example: '+593991234567'
             domainId:
               type: string
               description: ID del dominio o categoría (ej. "baby-shower", "wedding")
-              example: "baby-shower"
+              example: 'baby-shower'
             eventId:
               type: string
               description: ID del evento específico (más granular que domainId)
-              example: "baby-shower-123"
+              example: 'baby-shower-123'
             mode:
               type: string
               description: Modo de operación (ej. "EVENT" para validación de alcance)
               enum: [GENERAL, EVENT]
-              example: "EVENT"
+              example: 'EVENT'
           example:
-            userId: "+593991234567"
-            domainId: "baby-shower"
-            mode: "EVENT"
+            userId: '+593991234567'
+            domainId: 'baby-shower'
+            mode: 'EVENT'
 
     ChatResponse:
       type: object
@@ -971,40 +1013,40 @@ components:
         response:
           type: string
           description: Respuesta generada por el modelo de IA
-          example: "Spring AI es un framework de Spring diseñado específicamente..."
+          example: 'Spring AI es un framework de Spring diseñado específicamente...'
         conversationId:
           type: string
           description: ID de la conversación
-          example: "conv-abc-123"
+          example: 'conv-abc-123'
         timestamp:
           type: string
           format: date-time
           description: Marca de tiempo de la respuesta
-          example: "2025-12-17T10:30:00"
+          example: '2025-12-17T10:30:00'
         tokenUsage:
           $ref: '#/components/schemas/TokenUsage'
         userId:
           type: string
           description: ID del usuario (incluido si se generó anonymousId)
-          example: "anon-550e8400-e29b-41d4-a716-446655440000"
+          example: 'anon-550e8400-e29b-41d4-a716-446655440000'
         userProfile:
           $ref: '#/components/schemas/UserProfileDto'
         guardrailAction:
           type: string
           description: Acción de guardrail aplicada
           enum: [ALLOW, BLOCK, REDIRECT]
-          example: "ALLOW"
+          example: 'ALLOW'
         guardrailReason:
           type: string
           description: Razón de la acción de guardrail
           enum: [NONE, TOO_LONG, INJECTION, OUT_OF_SCOPE, UNSAFE]
-          example: "NONE"
+          example: 'NONE'
         quickReplies:
           type: array
           description: Sugerencias de respuestas rápidas para el usuario
           items:
             type: string
-          example: ["Ideas para juegos", "Lista de invitados", "Decoración"]
+          example: ['Ideas para juegos', 'Lista de invitados', 'Decoración']
 
     TokenUsage:
       type: object
@@ -1033,26 +1075,26 @@ components:
         userId:
           type: string
           description: ID único del usuario
-          example: "+593991234567"
+          example: '+593991234567'
         preferredLanguage:
           type: string
           description: Idioma preferido
-          example: "es-EC"
+          example: 'es-EC'
         tone:
           type: string
           description: Tono conversacional
           enum: [WARM, NEUTRAL, FORMAL, FUNNY]
-          example: "WARM"
+          example: 'WARM'
         verbosity:
           type: string
           description: Nivel de detalle en respuestas
           enum: [SHORT, MEDIUM, DETAILED]
-          example: "MEDIUM"
+          example: 'MEDIUM'
         emojiPreference:
           type: string
           description: Preferencia de uso de emojis
           enum: [NONE, LIGHT, HEAVY]
-          example: "LIGHT"
+          example: 'LIGHT'
 
     ErrorResponse:
       type: object
@@ -1064,7 +1106,7 @@ components:
           type: string
           format: date-time
           description: Marca de tiempo del error
-          example: "2025-12-17T10:30:00"
+          example: '2025-12-17T10:30:00'
         status:
           type: integer
           format: int32
@@ -1073,18 +1115,18 @@ components:
         message:
           type: string
           description: Mensaje descriptivo del error
-          example: "Error interno del servidor"
+          example: 'Error interno del servidor'
         details:
           type: string
           description: Detalles adicionales del error
-          example: "Error al procesar el mensaje con el modelo de IA"
+          example: 'Error al procesar el mensaje con el modelo de IA'
         errors:
           type: object
           description: Mapa de errores de validación por campo
           additionalProperties:
             type: string
           example:
-            message: "El mensaje no puede estar vacío"
+            message: 'El mensaje no puede estar vacío'
 
     ModelsResponse:
       type: object
@@ -1114,11 +1156,11 @@ components:
         id:
           type: string
           description: Identificador único del modelo
-          example: "gpt-4o-mini"
+          example: 'gpt-4o-mini'
         object:
           type: string
           description: Tipo de objeto (siempre "model")
-          example: "model"
+          example: 'model'
         created:
           type: integer
           format: int64
@@ -1127,7 +1169,7 @@ components:
         ownedBy:
           type: string
           description: Propietario del modelo
-          example: "openai"
+          example: 'openai'
 
     # ============================================================================
     # SCHEMAS DE EVENTOS
@@ -1454,6 +1496,11 @@ components:
           format: double
         commitmentCount:
           type: integer
+        reserverName:
+          type: string
+        reservedAt:
+          type: string
+          format: date-time
         createdAt:
           type: string
           format: date-time
@@ -1491,6 +1538,81 @@ components:
         coveragePercentage:
           type: number
           format: double
+
+    GiftReservationReportResponse:
+      type: object
+      properties:
+        eventId:
+          type: integer
+          format: int64
+        eventSlug:
+          type: string
+        eventName:
+          type: string
+        totalRecords:
+          type: integer
+        generatedAt:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GiftReservationReportItem'
+      required: [eventId, eventSlug, eventName, totalRecords, generatedAt, items]
+
+    GiftReservationReportItem:
+      type: object
+      properties:
+        giftId:
+          type: integer
+          format: int64
+        giftName:
+          type: string
+        giftStatus:
+          type: string
+          enum: [AVAILABLE, RESERVED, PARTIALLY_FUNDED, FULLY_FUNDED, INACTIVE]
+        commitmentType:
+          type: string
+          enum: [FULL_RESERVATION, PARTIAL_CONTRIBUTION]
+        reserverUserId:
+          type: string
+        reserverName:
+          type: string
+        reserverEmail:
+          type: string
+        reserverPhone:
+          type: string
+        contributionAmount:
+          type: number
+          format: double
+        notes:
+          type: string
+        reservedAt:
+          type: string
+          format: date-time
+
+    AttendeeSummaryResponse:
+      type: object
+      properties:
+        eventId:
+          type: integer
+          format: int64
+        eventSlug:
+          type: string
+        eventName:
+          type: string
+        totalConfirmed:
+          type: integer
+        totalGuests:
+          type: integer
+        generatedAt:
+          type: string
+          format: date-time
+        attendees:
+          type: array
+          items:
+            $ref: '#/components/schemas/RSVPResponse'
+      required: [eventId, eventSlug, eventName, totalConfirmed, totalGuests, generatedAt, attendees]
 
     ReserveGiftRequest:
       type: object

@@ -13,6 +13,12 @@ export {
   Activity,
   ActivityType,
   Statistics,
-  GiftSummary
+  GiftSummary,
+  GiftReservationReport,
+  GiftReservationReportItem,
+  GiftReservationStatus,
+  CommitmentType,
+  AttendeeSummary,
+  AttendeeDetail
 } from './dashboard.model';
 export * from './api.model';

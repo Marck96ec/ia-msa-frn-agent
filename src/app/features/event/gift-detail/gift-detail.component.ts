@@ -90,13 +90,55 @@ import {
                   </ul>
                 </div>
 
-                <div class="text-left bg-white/60 rounded-2xl p-4 text-sm text-gray-700 space-y-1">
+                <div class="text-left bg-white/60 rounded-2xl p-4 text-sm text-gray-700 space-y-3">
                   <p class="font-semibold text-gray-800">💳 Si deseas aportar el valor:</p>
-                  <p>Banco: Banco Pichincha</p>
-                  <p>Cuenta: Ahorro transaccional</p>
-                  <p>Número: 2203444745</p>
-                  <p>Titular: Marco Clavijo</p>
-                  <p class="text-xs text-gray-500">
+
+                  <!-- Deuna QR -->
+                  <div
+                    class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl p-4 border border-purple-500 text-white"
+                  >
+                    <div class="flex items-center justify-center gap-2 mb-3">
+                      <img src="assets/deuna-logo.png" alt="Deuna" class="h-6" />
+                      <span class="font-bold text-lg">Pago con Deuna</span>
+                    </div>
+
+                    <!-- QR desplegable -->
+                    <details class="text-center">
+                      <summary class="text-sm text-purple-200 cursor-pointer hover:text-white">Ver código QR</summary>
+                      <div class="flex justify-center bg-white rounded-lg p-2 mt-2">
+                        <img src="assets/deuna-qr.png" alt="QR Deuna - Marco Clavijo" class="w-36 h-36" />
+                      </div>
+                    </details>
+                    <p class="text-xs text-purple-300 text-center mt-2">Titular: Clavijo Reascos Marco Patricio</p>
+                  </div>
+
+                  <!-- Transferencia bancaria -->
+                  <div
+                    class="bg-gradient-to-br from-blue-900 to-blue-800 rounded-xl p-4 border border-blue-600 text-white"
+                  >
+                    <div class="flex items-center justify-center gap-2 mb-3">
+                      <img src="assets/pichincha-logo.png" alt="Banco Pichincha" class="h-8" />
+                      <span class="font-bold text-lg">Transferencia Bancaria</span>
+                    </div>
+                    <div class="bg-white/10 rounded-lg p-3 space-y-2 text-sm">
+                      <p><span class="text-blue-300">Banco:</span> Banco Pichincha</p>
+                      <p><span class="text-blue-300">Tipo:</span> Ahorro transaccional</p>
+                      <div class="flex items-center justify-between gap-2">
+                        <p>
+                          <span class="text-blue-300">Número:</span> <span class="font-mono font-bold">2203444745</span>
+                        </p>
+                        <button
+                          (click)="copyAccountNumber()"
+                          class="bg-white/20 hover:bg-white/30 text-white text-xs px-2 py-1 rounded transition-colors"
+                        >
+                          {{ accountCopied ? '✅ Copiado' : '📋 Copiar' }}
+                        </button>
+                      </div>
+                      <p><span class="text-blue-300">Titular:</span> Marco Clavijo</p>
+                    </div>
+                  </div>
+
+                  <p class="text-xs text-gray-500 mt-2">
                     Cuando realices el aporte, o si prefieres traerlo el día del baby shower, confírmalo en la app para
                     marcar el regalito como reservado.
                   </p>
@@ -181,6 +223,85 @@ import {
             <p class="text-gray-600">¡Gracias a todos los que colaboraron!</p>
             <button (click)="goBackToList()" class="btn-outline w-full mt-4">Ver otros regalos</button>
           </div>
+
+          <!-- Already reserved - Show payment info -->
+          <div *ngIf="gift.status === GiftStatus.RESERVED" class="space-y-4">
+            <div class="card text-center bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200">
+              <div class="text-5xl mb-3">🎁</div>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Este regalo ya está reservado</h3>
+
+              <!-- Info del reservador -->
+              <div *ngIf="gift.reserverName" class="bg-white/60 rounded-lg p-3 mt-3 text-sm">
+                <p class="text-gray-600">
+                  <span class="font-medium">Reservado por:</span>
+                  <span class="font-bold text-gray-800">{{ maskName(gift.reserverName) }}</span>
+                </p>
+                <p *ngIf="gift.reservedAt" class="text-gray-500 text-xs mt-1">
+                  {{ formatReservedDate(gift.reservedAt) }}
+                </p>
+              </div>
+
+              <p class="text-gray-600 mt-3">Si tú lo reservaste, aquí tienes la información para realizar el pago:</p>
+            </div>
+
+            <!-- Payment Methods Card -->
+            <div class="card">
+              <h3 class="text-lg font-bold text-gray-800 mb-4 text-center">💳 Métodos de pago</h3>
+
+              <div class="space-y-4">
+                <!-- Deuna -->
+                <div
+                  class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl p-4 border border-purple-500 text-white"
+                >
+                  <div class="flex items-center justify-center gap-2 mb-3">
+                    <img src="assets/deuna-logo.png" alt="Deuna" class="h-6" />
+                    <span class="font-bold text-lg">Pago con Deuna</span>
+                  </div>
+
+                  <!-- QR desplegable -->
+                  <details class="text-center">
+                    <summary class="text-sm text-purple-200 cursor-pointer hover:text-white">Ver código QR</summary>
+                    <div class="flex justify-center bg-white rounded-lg p-2 mt-2">
+                      <img src="assets/deuna-qr.png" alt="QR Deuna - Marco Clavijo" class="w-36 h-36" />
+                    </div>
+                  </details>
+                  <p class="text-xs text-purple-300 text-center mt-2">Titular: Clavijo Reascos Marco Patricio</p>
+                </div>
+
+                <!-- Transferencia bancaria -->
+                <div
+                  class="bg-gradient-to-br from-blue-900 to-blue-800 rounded-xl p-4 border border-blue-600 text-white"
+                >
+                  <div class="flex items-center justify-center gap-2 mb-3">
+                    <img src="assets/pichincha-logo.png" alt="Banco Pichincha" class="h-8" />
+                    <span class="font-bold text-lg">Transferencia Bancaria</span>
+                  </div>
+                  <div class="bg-white/10 rounded-lg p-3 space-y-2 text-sm">
+                    <p><span class="text-blue-300">Banco:</span> Banco Pichincha</p>
+                    <p><span class="text-blue-300">Tipo:</span> Ahorro transaccional</p>
+                    <div class="flex items-center justify-between gap-2">
+                      <p>
+                        <span class="text-blue-300">Número:</span> <span class="font-mono font-bold">2203444745</span>
+                      </p>
+                      <button
+                        (click)="copyAccountNumber()"
+                        class="bg-white/20 hover:bg-white/30 text-white text-xs px-2 py-1 rounded transition-colors"
+                      >
+                        {{ accountCopied ? '✅ Copiado' : '📋 Copiar' }}
+                      </button>
+                    </div>
+                    <p><span class="text-blue-300">Titular:</span> Marco Clavijo</p>
+                  </div>
+                </div>
+              </div>
+
+              <p class="text-xs text-gray-500 mt-4 text-center">
+                También puedes traer el regalo el día del baby shower 🎉
+              </p>
+            </div>
+
+            <button (click)="goBackToList()" class="btn-outline w-full">Ver otros regalos</button>
+          </div>
         </div>
 
         <!-- Success -->
@@ -212,6 +333,7 @@ export class GiftDetailComponent implements OnInit {
   contributionMessage: string = '';
   reserving = false;
   contributing = false;
+  accountCopied = false;
 
   quickAmounts = [5, 10, 20, 50];
 
@@ -369,5 +491,86 @@ export class GiftDetailComponent implements OnInit {
 
   navigate(path: string): void {
     this.router.navigate([`/e/${this.slug}/${path}`]);
+  }
+
+  copyAccountNumber(): void {
+    const accountNumber = '2203444745';
+
+    // Intentar con Clipboard API moderna
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard
+        .writeText(accountNumber)
+        .then(() => {
+          this.showCopiedFeedback();
+        })
+        .catch(() => {
+          this.fallbackCopy(accountNumber);
+        });
+    } else {
+      // Fallback para navegadores sin soporte o sin HTTPS
+      this.fallbackCopy(accountNumber);
+    }
+  }
+
+  private fallbackCopy(text: string): void {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    try {
+      document.execCommand('copy');
+      this.showCopiedFeedback();
+    } catch (err) {
+      // Si falla, al menos el usuario puede copiar manualmente
+      alert('Número de cuenta: ' + text);
+    }
+
+    document.body.removeChild(textArea);
+  }
+
+  private showCopiedFeedback(): void {
+    this.accountCopied = true;
+    setTimeout(() => {
+      this.accountCopied = false;
+    }, 2000);
+  }
+
+  maskName(name: string): string {
+    if (!name || name.length < 3) return '***';
+
+    const words = name.trim().split(' ');
+    return words
+      .map(word => {
+        if (word.length <= 2) return word;
+        const visibleChars = Math.min(4, Math.ceil(word.length * 0.4));
+        return word.substring(0, visibleChars) + '*'.repeat(word.length - visibleChars);
+      })
+      .join(' ');
+  }
+
+  formatReservedDate(dateString: string): string {
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 0) return 'Reservado hoy';
+      if (diffDays === 1) return 'Reservado ayer';
+      if (diffDays < 7) return `Reservado hace ${diffDays} días`;
+
+      return (
+        'Reservado el ' +
+        date.toLocaleDateString('es-EC', {
+          day: 'numeric',
+          month: 'short'
+        })
+      );
+    } catch {
+      return '';
+    }
   }
 }

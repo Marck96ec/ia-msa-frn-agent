@@ -157,6 +157,35 @@ import {
             [icon]="selectedStatus === RSVPStatus.CONFIRMED ? '🎉' : '💙'"
           />
 
+          <!-- Agregar al calendario (solo si confirmó) -->
+          <div *ngIf="selectedStatus === RSVPStatus.CONFIRMED" class="card">
+            <h3 class="text-lg font-bold text-gray-800 mb-3 text-center">📅 No olvides la fecha</h3>
+            <p class="text-gray-600 text-sm text-center mb-4">
+              Agrega el evento a tu calendario para que no se te pase
+            </p>
+
+            <!-- Botón único inteligente según dispositivo -->
+            <a
+              *ngIf="!isAppleDevice"
+              [href]="getGoogleCalendarUrl()"
+              target="_blank"
+              class="flex items-center justify-center gap-3 w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md hover:shadow-lg"
+            >
+              <span class="text-2xl">📅</span>
+              <span>Agregar a mi calendario</span>
+            </a>
+
+            <a
+              *ngIf="isAppleDevice"
+              [href]="getIcsDownloadUrl()"
+              download="baby-shower.ics"
+              class="flex items-center justify-center gap-3 w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md hover:shadow-lg"
+            >
+              <span class="text-2xl">📅</span>
+              <span>Agregar a mi calendario</span>
+            </a>
+          </div>
+
           <div class="space-y-3">
             <button (click)="goToSupport()" class="btn-primary w-full">Continuar</button>
             <button (click)="goToWelcome()" class="btn-outline w-full">Volver al inicio</button>
@@ -181,6 +210,7 @@ export class RsvpComponent implements OnInit {
   loading = false;
   submitted = false;
   error: any = null;
+  isAppleDevice = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -193,6 +223,8 @@ export class RsvpComponent implements OnInit {
 
   ngOnInit(): void {
     this.slug = this.route.snapshot.paramMap.get('slug') || '';
+    this.detectDevice();
+
     const event = this.stateService.getCurrentEvent();
     if (event) {
       this.setEventDetails(event);
@@ -205,6 +237,11 @@ export class RsvpComponent implements OnInit {
     if (savedName) {
       this.userName = savedName;
     }
+  }
+
+  private detectDevice(): void {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera || '';
+    this.isAppleDevice = /iPad|iPhone|iPod|Macintosh/i.test(userAgent) && !(window as any).MSStream;
   }
 
   selectStatus(status: RSVPStatus): void {
@@ -293,5 +330,75 @@ export class RsvpComponent implements OnInit {
 
   goToWelcome(): void {
     this.router.navigate([`/e/${this.slug}/welcome`]);
+  }
+
+  getGoogleCalendarUrl(): string {
+    const event = this.stateService.getCurrentEvent();
+    if (!event) return '#';
+
+    const startDate = new Date(event.eventDate);
+    const endDate = new Date(startDate.getTime() + 3 * 60 * 60 * 1000); // +3 horas
+
+    const formatDate = (date: Date) => {
+      return date
+        .toISOString()
+        .replace(/[-:]/g, '')
+        .replace(/\.\d{3}/, '');
+    };
+
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: event.name || 'Baby Shower',
+      dates: `${formatDate(startDate)}/${formatDate(endDate)}`,
+      details: event.description || '¡Te esperamos con mucho cariño!',
+      location: event.location || '',
+      sf: 'true'
+    });
+
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  }
+
+  getIcsDownloadUrl(): string {
+    const event = this.stateService.getCurrentEvent();
+    if (!event) return '#';
+
+    const startDate = new Date(event.eventDate);
+    const endDate = new Date(startDate.getTime() + 3 * 60 * 60 * 1000); // +3 horas
+
+    const formatDate = (date: Date) => {
+      return (
+        date
+          .toISOString()
+          .replace(/[-:]/g, '')
+          .replace(/\.\d{3}/, '')
+          .slice(0, -1) + 'Z'
+      );
+    };
+
+    const escapeIcs = (text: string) => {
+      return (text || '').replace(/[,;\\]/g, '\\$&').replace(/\n/g, '\\n');
+    };
+
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Baby Shower App//ES',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      `DTSTART:${formatDate(startDate)}`,
+      `DTEND:${formatDate(endDate)}`,
+      `SUMMARY:${escapeIcs(event.name || 'Baby Shower')}`,
+      `DESCRIPTION:${escapeIcs(event.description || '¡Te esperamos con mucho cariño!')}`,
+      `LOCATION:${escapeIcs(event.location || '')}`,
+      `URL:${event.locationUrl || ''}`,
+      'STATUS:CONFIRMED',
+      `UID:${event.id}-${Date.now()}@babyshower.app`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    return URL.createObjectURL(blob);
   }
 }

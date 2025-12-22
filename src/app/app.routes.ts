@@ -35,7 +35,8 @@ export const routes: Routes = [
       },
       {
         path: 'gifts/:giftId',
-        loadComponent: () => import('./features/event/gift-detail/gift-detail.component').then(m => m.GiftDetailComponent)
+        loadComponent: () =>
+          import('./features/event/gift-detail/gift-detail.component').then(m => m.GiftDetailComponent)
       },
       {
         path: 'ideas',
@@ -43,7 +44,8 @@ export const routes: Routes = [
       },
       {
         path: 'baby-message',
-        loadComponent: () => import('./features/event/baby-message/baby-message.component').then(m => m.BabyMessageComponent)
+        loadComponent: () =>
+          import('./features/event/baby-message/baby-message.component').then(m => m.BabyMessageComponent)
       },
       {
         path: 'chat',
@@ -67,23 +69,27 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        loadComponent: () => import('./features/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+        loadComponent: () =>
+          import('./features/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
       },
       {
         path: 'gifts',
-        loadComponent: () => import('./features/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+        loadComponent: () =>
+          import('./features/admin/gifts-report/admin-gifts-report.component').then(m => m.AdminGiftsReportComponent)
       },
       {
         path: 'attendees',
-        loadComponent: () => import('./features/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+        loadComponent: () =>
+          import('./features/admin/attendees/admin-attendees.component').then(m => m.AdminAttendeesComponent)
       },
       {
         path: 'ideas',
-        loadComponent: () => import('./features/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+        loadComponent: () => import('./features/admin/ideas/admin-ideas.component').then(m => m.AdminIdeasComponent)
       },
       {
         path: 'baby-messages',
-        loadComponent: () => import('./features/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+        loadComponent: () =>
+          import('./features/admin/baby-messages/admin-baby-messages.component').then(m => m.AdminBabyMessagesComponent)
       }
     ]
   },

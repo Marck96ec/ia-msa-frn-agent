@@ -17,6 +17,9 @@ export interface Gift {
   commitmentCount: number;
   createdAt?: string;
   updatedAt?: string;
+  // Info del reservador (cuando está reservado)
+  reserverName?: string;
+  reservedAt?: string;
 }
 
 export enum GiftStatus {
