@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EventService, StateService, ChatService } from '@core/services';
@@ -16,15 +16,47 @@ import { LoadingSpinnerComponent, ErrorMessageComponent } from '@shared/componen
       <app-error-message *ngIf="error" [error]="error" (retry)="loadEvent()" />
 
       <div *ngIf="!loading && !error && event" class="flex-1">
-        <!-- Hero emocional -->
+        <!-- Hero emocional con animaciones flotantes -->
         <div class="relative h-80 bg-gradient-to-br from-baby-pink to-baby-blue overflow-hidden">
           <img *ngIf="event.imageUrl" [src]="event.imageUrl" [alt]="event.name" class="w-full h-full object-cover" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+
+          <!-- Emojis flotantes decorativos -->
+          <div class="floating-emojis">
+            <span class="floating-emoji" style="--delay: 0s; --duration: 8s; --start-x: 10%;">✨</span>
+            <span class="floating-emoji" style="--delay: 1.5s; --duration: 10s; --start-x: 25%;">💙</span>
+            <span class="floating-emoji" style="--delay: 3s; --duration: 7s; --start-x: 45%;">⭐</span>
+            <span class="floating-emoji" style="--delay: 0.5s; --duration: 9s; --start-x: 65%;">💫</span>
+            <span class="floating-emoji" style="--delay: 2s; --duration: 11s; --start-x: 80%;">🤍</span>
+            <span class="floating-emoji" style="--delay: 4s; --duration: 8s; --start-x: 90%;">✨</span>
+            <span class="floating-emoji" style="--delay: 2.5s; --duration: 12s; --start-x: 5%;">💛</span>
+            <span class="floating-emoji" style="--delay: 1s; --duration: 9s; --start-x: 55%;">🌟</span>
+          </div>
+
+          <!-- Contenido del hero -->
+          <div class="absolute bottom-0 left-0 right-0 p-6 text-white z-10">
             <p class="text-4xl mb-2">👶💙</p>
             <h1 class="text-2xl font-bold leading-tight">Bienvenido al Baby Shower de</h1>
             <p class="text-3xl font-bold text-baby-yellow">{{ event.babyName || 'nuestro bebé' }}</p>
           </div>
+
+          <!-- Botón de música ambiental -->
+          <button
+            (click)="toggleMusic()"
+            class="music-toggle"
+            [class.playing]="isMusicPlaying"
+            aria-label="Reproducir música ambiental"
+          >
+            <span class="music-icon" [class.animate-pulse-music]="isMusicPlaying">
+              {{ isMusicPlaying ? '🎵' : '🔇' }}
+            </span>
+            <span class="music-label">{{ isMusicPlaying ? 'Música' : 'Activar' }}</span>
+          </button>
+
+          <!-- Audio element (hidden) -->
+          <audio #audioPlayer loop preload="none">
+            <source src="https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3" type="audio/mpeg" />
+          </audio>
         </div>
 
         <div class="px-5 pt-8 pb-10">
@@ -129,9 +161,114 @@ import { LoadingSpinnerComponent, ErrorMessageComponent } from '@shared/componen
         </div>
       </div>
     </div>
-  `
+  `,
+  styles: [
+    `
+      /* Contenedor de emojis flotantes */
+      .floating-emojis {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 5;
+      }
+
+      /* Emoji flotante individual */
+      .floating-emoji {
+        position: absolute;
+        bottom: -40px;
+        left: var(--start-x, 50%);
+        font-size: 1.5rem;
+        opacity: 0;
+        animation: floatUp var(--duration, 8s) ease-in-out var(--delay, 0s) infinite;
+      }
+
+      @keyframes floatUp {
+        0% {
+          opacity: 0;
+          transform: translateY(0) scale(0.5) rotate(0deg);
+        }
+        10% {
+          opacity: 0.7;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        90% {
+          opacity: 0.3;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-350px) scale(1) rotate(20deg);
+        }
+      }
+
+      /* Botón de música */
+      .music-toggle {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(8px);
+        border: none;
+        border-radius: 9999px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        transition: all 0.2s ease-out;
+      }
+
+      .music-toggle:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: scale(1.05);
+      }
+
+      .music-toggle:active {
+        transform: scale(0.95);
+      }
+
+      .music-toggle.playing {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.9), rgba(244, 114, 182, 0.9));
+      }
+
+      .music-toggle.playing .music-label {
+        color: white;
+      }
+
+      .music-icon {
+        font-size: 1.125rem;
+        line-height: 1;
+      }
+
+      .music-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      .animate-pulse-music {
+        animation: pulseMusic 1.5s ease-in-out infinite;
+      }
+
+      @keyframes pulseMusic {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+      }
+    `
+  ]
 })
-export class WelcomeComponent implements OnInit {
+export class WelcomeComponent implements OnInit, OnDestroy {
+  @ViewChild('audioPlayer') audioPlayerRef!: ElementRef<HTMLAudioElement>;
+
   event: Event | null = null;
   loading = true;
   error: any = null;
@@ -140,7 +277,9 @@ export class WelcomeComponent implements OnInit {
   loadingWelcomeMessage = false;
   welcomeMessageError = false;
 
-  private slug: string = '';
+  isMusicPlaying = false;
+
+  private slug = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -215,6 +354,35 @@ export class WelcomeComponent implements OnInit {
 
   onContinue(): void {
     this.router.navigate([`/e/${this.slug}/rsvp`]);
+  }
+
+  toggleMusic(): void {
+    const audio = this.audioPlayerRef?.nativeElement;
+    if (!audio) return;
+
+    if (this.isMusicPlaying) {
+      audio.pause();
+      this.isMusicPlaying = false;
+    } else {
+      audio.volume = 0.3; // Volumen suave
+      audio
+        .play()
+        .then(() => {
+          this.isMusicPlaying = true;
+        })
+        .catch(err => {
+          console.warn('No se pudo reproducir audio:', err);
+        });
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Detener música al salir del componente
+    const audio = this.audioPlayerRef?.nativeElement;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
   }
 
   private loadWelcomeMessage(babyName: string | undefined): void {
